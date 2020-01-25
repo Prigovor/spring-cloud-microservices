@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+}
+
+group = 'com.prigovor'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '13'
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+}
+
+dependencies {
+    /* WEB */
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    /* Documentation */
+    implementation('io.springfox:springfox-swagger2:3.0.0-SNAPSHOT')
+    /* Test */
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
