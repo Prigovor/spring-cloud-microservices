@@ -1,6 +1,7 @@
 version: '2.3'
 
 services:
+
   product:
     build: microservices/product-service
     mem_limit: 350m
