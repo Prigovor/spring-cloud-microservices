@@ -1,6 +1,7 @@
 package com.prigovor.api.core.recommendation;
 
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -25,10 +26,10 @@ public interface RecommendationService {
      * curl $HOST:$PORT/recommendation?productId=1
      *
      * @param productId product id
-     * @return {@code List<Recommendation>}
+     * @return {@code Flux<Recommendation>}
      */
     @GetMapping(value = "/recommendation", produces = "application/json")
-    List<Recommendation> getRecommendations(@RequestParam(value = "productId") final int productId);
+    Flux<Recommendation> getRecommendations(@RequestParam(value = "productId") final int productId);
 
     /**
      * Sample usage:

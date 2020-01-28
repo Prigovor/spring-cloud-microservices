@@ -1,6 +1,7 @@
 package com.prigovor.api.core.review;
 
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -23,10 +24,10 @@ public interface ReviewService {
      * Sample usage: curl $HOST:$PORT/review?productId=1
      *
      * @param productId product id
-     * @return {@code List<Review>}
+     * @return {@code Flux<Review>}
      */
     @GetMapping(value = "/review", produces = "application/json")
-    List<Review> getReviews(@RequestParam(value = "productId") final int productId);
+    Flux<Review> getReviews(@RequestParam(value = "productId") final int productId);
 
     /**
      * Sample usage:

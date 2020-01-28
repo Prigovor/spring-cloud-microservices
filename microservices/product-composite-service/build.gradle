@@ -23,24 +23,40 @@ repositories {
     maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
 }
 
+ext {
+    set('swaggerVersion', '3.0.0-SNAPSHOT')
+    set('springCloudVersion', "Hoxton.RELEASE")
+}
+
 dependencies {
     /* Custom */
     implementation project(':api')
     implementation project(':util')
     /* Web */
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    /* Integration */
+    implementation('org.springframework.cloud:spring-cloud-starter-stream-kafka')
+    implementation('org.springframework.cloud:spring-cloud-starter-stream-rabbit')
     /* Documents */
-    implementation('io.springfox:springfox-swagger2:3.0.0-SNAPSHOT')
-    implementation('io.springfox:springfox-swagger-ui:3.0.0-SNAPSHOT')
-    implementation('io.springfox:springfox-spring-webflux:3.0.0-SNAPSHOT')
+    implementation("io.springfox:springfox-swagger2:${swaggerVersion}")
+    implementation("io.springfox:springfox-swagger-ui:${swaggerVersion}")
+    implementation("io.springfox:springfox-spring-webflux:${swaggerVersion}")
     /* Tools */
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     /* Test */
     testImplementation 'io.projectreactor:reactor-test'
+    testImplementation('org.springframework.cloud:spring-cloud-stream-test-support')
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+dependencyManagement {
+    imports {
+        //noinspection GrUnresolvedAccess
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
 

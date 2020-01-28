@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 @SpringBootApplication
 @ComponentScan({"com.prigovor"})
@@ -14,10 +15,8 @@ public class ProductServiceApplication {
     private static final Logger LOG = LoggerFactory.getLogger(ProductServiceApplication.class);
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext ctx = SpringApplication.run(ProductServiceApplication.class, args);
-        String mongoDbHost = ctx.getEnvironment().getProperty("spring.data.mongodb.host");
-        String mongoDbPort = ctx.getEnvironment().getProperty("spring.data.mongodb.port");
-        LOG.info("Connected to MongoDb: " + mongoDbHost + ":" + mongoDbPort);
+        final ConfigurableEnvironment env = SpringApplication.run(ProductServiceApplication.class, args).getEnvironment();
+        LOG.info("Connected to MongoDb: " + env.getProperty("spring.data.mongodb.host") + ":" + env.getProperty("spring.data.mongodb.port"));
     }
 
 }

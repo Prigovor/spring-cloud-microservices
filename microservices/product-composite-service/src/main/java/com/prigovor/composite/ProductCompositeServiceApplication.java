@@ -1,16 +1,19 @@
 package com.prigovor.composite;
 
+import com.prigovor.composite.services.ProductCompositeIntegration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.health.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.client.RestTemplate;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebFlux;
+
+import java.util.LinkedHashMap;
 
 import static java.util.Collections.emptyList;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -41,6 +44,11 @@ public class ProductCompositeServiceApplication {
     @Value("${api.common.contact.email}")
     String apiContactEmail;
 
+    public ProductCompositeServiceApplication(HealthAggregator healthAggregator, ProductCompositeIntegration integration) {
+        this.healthAggregator = healthAggregator;
+        this.integration = integration;
+    }
+
     /**
      * Will exposed on $HOST:$PORT/swagger-ui.html
      *
@@ -50,7 +58,7 @@ public class ProductCompositeServiceApplication {
     public Docket apiDocumentation() {
         return new Docket(SWAGGER_2)
                 .select()
-                .apis(basePackage("se.magnus.microservices.composite.product"))
+                .apis(basePackage("com.prigovor"))
                 .paths(PathSelectors.any())
                 .build()
                 .globalResponseMessage(POST, emptyList())
@@ -68,9 +76,16 @@ public class ProductCompositeServiceApplication {
                 ));
     }
 
+    final HealthAggregator healthAggregator;
+    final ProductCompositeIntegration integration;
+
     @Bean
-    RestTemplate restTemplate() {
-        return new RestTemplate();
+    ReactiveHealthIndicator coreServices() {
+        ReactiveHealthIndicatorRegistry registry = new DefaultReactiveHealthIndicatorRegistry(new LinkedHashMap<>());
+        registry.register("review", () -> integration.getReviewHealth());
+        registry.register("product", () -> integration.getProductHealth());
+        registry.register("recommendation", () -> integration.getRecommendationHealth());
+        return new CompositeReactiveHealthIndicator(healthAggregator, registry);
     }
 
     public static void main(String[] args) {

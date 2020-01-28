@@ -1,6 +1,7 @@
 package com.prigovor.api.core.product;
 
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 public interface ProductService {
 
@@ -24,7 +25,7 @@ public interface ProductService {
      * @return the product, if found, else null
      */
     @GetMapping(value = "/product/{productId}", produces = "application/json")
-    Product getProduct(@PathVariable int productId);
+    Mono<Product> getProduct(@PathVariable int productId);
 
     /**
      * Sample usage:
